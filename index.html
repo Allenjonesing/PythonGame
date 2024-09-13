@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MobileBERT Text Classification</title>
+    <title>Text Classification with Universal Sentence Encoder</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilebert"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,8 +31,8 @@
     </style>
 </head>
 <body>
-    <h1>MobileBERT Text Classification</h1>
-    <p>Enter a sentence and classify its meaning:</p>
+    <h1>Text Classification with USE</h1>
+    <p>Enter a sentence to classify:</p>
     <input type="text" id="input-text" placeholder="Type a sentence...">
     <br>
     <button onclick="classifyText()">Classify Text</button>
@@ -42,10 +42,10 @@
     <script>
         let model;
 
-        // Load the MobileBERT model
+        // Load the Universal Sentence Encoder model
         async function loadModel() {
-            model = await mobilebert.load();
-            console.log("MobileBERT model loaded successfully.");
+            model = await use.load();
+            console.log("Universal Sentence Encoder model loaded successfully.");
         }
 
         // Function to classify the input text
@@ -56,14 +56,15 @@
                 return;
             }
 
-            // Tokenize and classify the text using the loaded model
-            const classificationResult = await model.classify(inputText);
-            
-            // Display the result
-            document.getElementById("result").innerText = JSON.stringify(classificationResult, null, 2);
+            // Use the model to embed the input text
+            const embeddings = await model.embed([inputText]);
+            const inputEmbedding = embeddings.arraySync();
+
+            // Display the result (just a basic example)
+            document.getElementById("result").innerText = "Embedding for the input sentence: " + JSON.stringify(inputEmbedding[0]);
         }
 
-        // Load the MobileBERT model when the page loads
+        // Load the model when the page loads
         window.onload = loadModel;
     </script>
 </body>
