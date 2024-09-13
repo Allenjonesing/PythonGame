@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #2e86de;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>    
+<head>
+    <title>Python GitHub Page with Brython</title>
+</head>
+<body>
+    <h1>Welcome to My Python GitHub Page</h1>
+    <p>Click the button to run Python code:</p>
+    <button id="run-button">Run Python</button>
+    <div id="output"></div>
+
+    <script type="text/python">
+        from browser import document
+        
+        def run_code(event):
+            document["output"].text = "Python is running in the browser!"
+        
+        document["run-button"].bind("click", run_code)
+    </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+    <script> brython(); </script>
+</body>
+</html>
