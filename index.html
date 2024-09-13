@@ -1,61 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileBERT Text Classification</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilebert"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
             text-align: center;
         }
+
         h1 {
             color: #2e86de;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
+
+        input, button {
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
         }
-        button:hover {
-            background-color: #2980b9;
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
         }
-    </style>    
-<head>
-    <title>Python GitHub Page with Brython</title>
+    </style>
 </head>
 <body>
-    <h1>Welcome to My Python GitHub Page</h1>
-    <p>Click the button to run Python code:</p>
-    <button id="run-button">Run Python</button>
-    <div id="output"></div>
+    <h1>MobileBERT Text Classification</h1>
+    <p>Enter a sentence and classify its meaning:</p>
+    <input type="text" id="input-text" placeholder="Type a sentence...">
+    <br>
+    <button onclick="classifyText()">Classify Text</button>
 
-    <script type="text/python">
-        from transformers import GPTNeoForCausalLM, AutoTokenizer
+    <div id="result"></div>
 
-        # Load the GPT-Neo model and tokenizer
-        model = GPTNeoForCausalLM.from_pretrained("EleutherAI/gpt-neo-125M")
-        tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-125M")
-        
-        # Function to generate an NPC response
-        def generate_npc_response(prompt):
-            # Tokenize the player's input
-            inputs = tokenizer(prompt, return_tensors="pt")
+    <script>
+        let model;
+
+        // Load the MobileBERT model
+        async function loadModel() {
+            model = await mobilebert.load();
+            console.log("MobileBERT model loaded successfully.");
+        }
+
+        // Function to classify the input text
+        async function classifyText() {
+            const inputText = document.getElementById("input-text").value;
+            if (!inputText) {
+                document.getElementById("result").innerText = "Please enter some text!";
+                return;
+            }
+
+            // Tokenize and classify the text using the loaded model
+            const classificationResult = await model.classify(inputText);
             
-            # Generate a response using the model
-            outputs = model.generate(inputs["input_ids"], max_length=100)
-            
-            # Decode the generated tokens into a string
-            return tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        # Simulate a conversation with the NPC
-        while True:
-            player_input = input("You: ")
-            if player_input.lower() == 'exit':
-                break
-            npc_response = generate_npc_response(player_input)
-            print(f"NPC: {npc_response}")
-            </script>
+            // Display the result
+            document.getElementById("result").innerText = JSON.stringify(classificationResult, null, 2);
+        }
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
-    <script> brython(); </script>
+        // Load the MobileBERT model when the page loads
+        window.onload = loadModel;
+    </script>
 </body>
 </html>
